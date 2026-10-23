@@ -1,0 +1,102 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "attempts_accessible_wc": {
+      "anyOf": [
+        {
+          "maximum": 10000,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Attempts Accessible Wc"
+    },
+    "attempts_female_wc": {
+      "anyOf": [
+        {
+          "maximum": 10000,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Attempts Female Wc"
+    },
+    "attempts_male_wc": {
+      "anyOf": [
+        {
+          "maximum": 10000,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Attempts Male Wc"
+    },
+    "attempts_urinal": {
+      "anyOf": [
+        {
+          "maximum": 10000,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Attempts Urinal"
+    },
+    "boarding_passengers": {
+      "maximum": 10000,
+      "minimum": 1,
+      "title": "Boarding Passengers",
+      "type": "integer"
+    },
+    "departure_at": {
+      "format": "date-time",
+      "title": "Departure At",
+      "type": "string"
+    },
+    "platform": {
+      "maxLength": 12,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9 -]+$",
+      "title": "Platform",
+      "type": "string"
+    },
+    "station_code": {
+      "maxLength": 12,
+      "minLength": 1,
+      "pattern": "^[A-Z0-9]+$",
+      "title": "Station Code",
+      "type": "string"
+    },
+    "train_id": {
+      "maxLength": 20,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Train Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_code",
+    "platform",
+    "train_id",
+    "departure_at",
+    "boarding_passengers"
+  ],
+  "title": "TrainCall",
+  "type": "object"
+}

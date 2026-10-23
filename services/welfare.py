@@ -1,4 +1,4 @@
-from dataclasses import dataclass,asdict
+from dataclasses import dataclass,asdict,replace
 from math import pow
 from .infrastructure import Inputs,calculate
 
@@ -32,9 +32,9 @@ def evaluate(policy:Policy, infra:Inputs):
     wc=base*(1-infra.urinal_share)
     urinal=base-wc
     multiplier=pow(1+policy.tariff_wc/5,policy.demand_response)
-    realized_wc=wc*multiplier
+    realized_wc=wc*(policy.exempt_share+(1-policy.exempt_share)*multiplier)
     lost=max(0,wc-realized_wc)
-    charged=realized_wc*(1-policy.exempt_share)
+    charged=wc*(1-policy.exempt_share)*multiplier
     gross_lakh=charged*policy.tariff_wc*365/100000
     premium_revenue_lakh=realized_wc*policy.premium_share*policy.premium_tariff*365/100000
     collection_lakh=(gross_lakh+premium_revenue_lakh)*policy.collection_fraction+(policy.collection_fixed_lakh if policy.tariff_wc>0 or policy.premium_tariff>0 else 0)
@@ -45,8 +45,9 @@ def evaluate(policy:Policy, infra:Inputs):
     incremental_social_lakh= -lost_welfare_lakh-coach_cost_lakh+saved_variable_lakh-collection_lakh-policy.annual_premium_service_cost_lakh+policy.annual_health_benefit_lakh+policy.annual_environment_benefit_lakh
     incremental_financial_lakh=gross_lakh+premium_revenue_lakh-collection_lakh+saved_variable_lakh-policy.annual_premium_service_cost_lakh
     annual_cost=calculate(infra)['opex_lakh_year']
-    return dict(policy=asdict(policy),potential_wc_day=round(wc),realized_wc_day=round(realized_wc),urinal_day=round(urinal),discouraged_wc_day=round(lost),gross_fees_lakh_year=round(gross_lakh+premium_revenue_lakh,2),collection_cost_lakh_year=round(collection_lakh,2),incremental_financial_vs_free_lakh_year=round(incremental_financial_lakh,2),incremental_social_vs_free_lakh_year=round(incremental_social_lakh,2),annual_opex_lakh=round(annual_cost,2),annual_capex_equivalent_lakh=round(calculate(infra)['capex_lakh']*(policy.social_discount_rate/(1-(1+policy.social_discount_rate)**(-policy.years))),2),distributional_warning='Equity-weighted access value is illustrative, not a validated willingness-to-pay estimate')
+    return dict(policy=asdict(policy),potential_wc_day=round(wc),realized_wc_day=round(realized_wc),urinal_day=round(urinal),discouraged_wc_day=round(lost),gross_fees_lakh_year=round(gross_lakh+premium_revenue_lakh,2),collection_cost_lakh_year=round(collection_lakh,2),incremental_financial_vs_free_lakh_year=round(incremental_financial_lakh,2),incremental_social_vs_free_lakh_year=round(incremental_social_lakh,2),annual_opex_lakh=round(annual_cost,2),annual_capex_equivalent_lakh=round(calculate(infra)['capex_lakh']*(policy.social_discount_rate/(1-(1+policy.social_discount_rate)**(-policy.years)) if policy.social_discount_rate>0 else 1/policy.years),2),distributional_warning='Equity-weighted access value is illustrative, not a validated willingness-to-pay estimate')
 
-def compare(infra=None):
+def compare(infra=None, base_policy=None):
     x=infra or Inputs()
-    return {k:evaluate(v,x) for k,v in {'free_basic':Policy(),'pay_wc_2':Policy(tariff_wc=2),'pay_wc_5':Policy(tariff_wc=5),'free_basic_premium':Policy(premium_tariff=10,premium_share=.10,annual_premium_service_cost_lakh=3)}.items()}
+    base=base_policy or Policy()
+    return {k:evaluate(v,x) for k,v in {'free_basic':replace(base,tariff_wc=0),'pay_wc_2':replace(base,tariff_wc=2),'pay_wc_5':replace(base,tariff_wc=5),'free_basic_premium':replace(base,tariff_wc=0,premium_tariff=10,premium_share=.10,annual_premium_service_cost_lakh=3)}.items()}

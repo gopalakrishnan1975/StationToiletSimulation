@@ -33,7 +33,7 @@ def evaluate(f:Funding, x:Inputs):
     billable=f.annual_boardings*demand_multiplier*paying_fraction
     existing=f.annual_boardings*f.allocated_existing_fare_rs/100000
     incremental=billable*fee_inc/100000
-    pkm=f.annual_passenger_km*f.proposed_rate_per_pkm_rs/100000
+    pkm=f.annual_passenger_km*f.proposed_rate_per_pkm_rs/100000 if f.allocation_by_passenger_km else 0
     available=(existing+incremental+pkm)*(1-f.revenue_leakage_fraction)+f.nonfare_revenue_lakh+f.station_support_grant_lakh
     # Passenger surcharge is a transfer, not gross social gain; avoids double counting.
     return {'annual_boardings':round(f.annual_boardings*demand_multiplier),'annualized_capex_lakh':round(cap_ann,2),
@@ -42,6 +42,6 @@ def evaluate(f:Funding, x:Inputs):
             'existing_fare_allocation_lakh':round(existing,2),'incremental_fare_revenue_lakh':round(incremental,2),
             'pkm_allocation_lakh':round(pkm,2),'all_funding_lakh':round(available,2),
             'surplus_gap_lakh':round(available-full,2),
-            'required_allocation_per_boarding_rs':round(max(0,(full-f.nonfare_revenue_lakh-f.station_support_grant_lakh))*100000/max(1,f.annual_boardings),2),
-            'break_even_boardings_at_allocated_rs':round(full*100000/max(0.01,f.allocated_existing_fare_rs+fee_inc)),
+            'required_allocation_per_boarding_rs':round(max(0,(full-f.nonfare_revenue_lakh-f.station_support_grant_lakh)/max(.000001,1-f.revenue_leakage_fraction)-incremental-pkm)*100000/max(1,f.annual_boardings),2),
+            'break_even_boardings_at_allocated_rs':round(max(0,full-f.nonfare_revenue_lakh-f.station_support_grant_lakh-pkm*(1-f.revenue_leakage_fraction))*100000/((f.allocated_existing_fare_rs+fee_inc*demand_multiplier*paying_fraction)*(1-f.revenue_leakage_fraction))) if (f.allocated_existing_fare_rs+fee_inc*demand_multiplier*paying_fraction)*(1-f.revenue_leakage_fraction)>0 else None,
             'formula_note':'Charges or allocated fare receipts are financing transfers; welfare must separately include accessibility, diversion, operating resources, quality, distributional weights, and demand loss.'}

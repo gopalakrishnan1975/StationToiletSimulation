@@ -1,0 +1,660 @@
+{
+  "components": {
+    "schemas": {
+      "FundingRequest": {
+        "properties": {
+          "allocated_existing_fare_rs": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Allocated Existing Fare Rs",
+            "type": "number"
+          },
+          "annual_boardings": {
+            "default": 7300000,
+            "minimum": 1.0,
+            "title": "Annual Boardings",
+            "type": "integer"
+          },
+          "infra": {
+            "$ref": "#/components/schemas/InfrastructureRequest",
+            "default": {
+              "passengers_train": 1000,
+              "station_use": 0.25,
+              "trains_day": 20,
+              "urinal_share": 0.375
+            }
+          },
+          "nonfare_revenue_lakh": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Nonfare Revenue Lakh",
+            "type": "number"
+          },
+          "proposed_incremental_fare_rs": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Proposed Incremental Fare Rs",
+            "type": "number"
+          },
+          "station_support_grant_lakh": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Station Support Grant Lakh",
+            "type": "number"
+          }
+        },
+        "title": "FundingRequest",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "InfrastructureRequest": {
+        "properties": {
+          "passengers_train": {
+            "default": 1000,
+            "maximum": 10000.0,
+            "minimum": 1.0,
+            "title": "Passengers Train",
+            "type": "integer"
+          },
+          "station_use": {
+            "default": 0.25,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Station Use",
+            "type": "number"
+          },
+          "trains_day": {
+            "default": 20,
+            "maximum": 500.0,
+            "minimum": 1.0,
+            "title": "Trains Day",
+            "type": "integer"
+          },
+          "urinal_share": {
+            "default": 0.375,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Urinal Share",
+            "type": "number"
+          }
+        },
+        "title": "InfrastructureRequest",
+        "type": "object"
+      },
+      "QueueRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "calls": {
+            "items": {
+              "$ref": "#/components/schemas/TrainCall"
+            },
+            "maxItems": 100,
+            "title": "Calls",
+            "type": "array"
+          },
+          "counts": {
+            "default": [
+              9,
+              6,
+              18,
+              3
+            ],
+            "maxItems": 4,
+            "minItems": 4,
+            "prefixItems": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Counts",
+            "type": "array"
+          },
+          "headway": {
+            "default": 30,
+            "maximum": 180.0,
+            "minimum": 5.0,
+            "title": "Headway",
+            "type": "number"
+          },
+          "length": {
+            "default": 600,
+            "maximum": 1500.0,
+            "minimum": 100.0,
+            "title": "Length",
+            "type": "number"
+          },
+          "passengers": {
+            "default": 1000,
+            "maximum": 2500.0,
+            "minimum": 1.0,
+            "title": "Passengers",
+            "type": "integer"
+          },
+          "repeats": {
+            "default": 20,
+            "maximum": 100.0,
+            "minimum": 2.0,
+            "title": "Repeats",
+            "type": "integer"
+          },
+          "service_floor": {
+            "default": 0.9,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Service Floor",
+            "type": "number"
+          },
+          "target": {
+            "default": 3,
+            "exclusiveMinimum": 0.0,
+            "maximum": 30.0,
+            "title": "Target",
+            "type": "number"
+          },
+          "trains": {
+            "default": 3,
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "Trains",
+            "type": "integer"
+          },
+          "urinal_share": {
+            "default": 0.375,
+            "maximum": 0.485,
+            "minimum": 0.0,
+            "title": "Urinal Share",
+            "type": "number"
+          },
+          "use": {
+            "default": 0.25,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Use",
+            "type": "number"
+          },
+          "waiting": {
+            "default": 30,
+            "maximum": 120.0,
+            "minimum": 5.0,
+            "title": "Waiting",
+            "type": "number"
+          }
+        },
+        "title": "QueueRequest",
+        "type": "object"
+      },
+      "TrainCall": {
+        "additionalProperties": false,
+        "properties": {
+          "attempts_accessible_wc": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempts Accessible Wc"
+          },
+          "attempts_female_wc": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempts Female Wc"
+          },
+          "attempts_male_wc": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempts Male Wc"
+          },
+          "attempts_urinal": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempts Urinal"
+          },
+          "boarding_passengers": {
+            "maximum": 10000.0,
+            "minimum": 1.0,
+            "title": "Boarding Passengers",
+            "type": "integer"
+          },
+          "departure_at": {
+            "format": "date-time",
+            "title": "Departure At",
+            "type": "string"
+          },
+          "platform": {
+            "maxLength": 12,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9 -]+$",
+            "title": "Platform",
+            "type": "string"
+          },
+          "station_code": {
+            "maxLength": 12,
+            "minLength": 1,
+            "pattern": "^[A-Z0-9]+$",
+            "title": "Station Code",
+            "type": "string"
+          },
+          "train_id": {
+            "maxLength": 20,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "title": "Train Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "station_code",
+          "platform",
+          "train_id",
+          "departure_at",
+          "boarding_passengers"
+        ],
+        "title": "TrainCall",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "WelfareRequest": {
+        "properties": {
+          "demand_response": {
+            "default": -0.25,
+            "maximum": 0.0,
+            "minimum": -3.0,
+            "title": "Demand Response",
+            "type": "number"
+          },
+          "infra": {
+            "$ref": "#/components/schemas/InfrastructureRequest",
+            "default": {
+              "passengers_train": 1000,
+              "station_use": 0.25,
+              "trains_day": 20,
+              "urinal_share": 0.375
+            }
+          },
+          "onboard_diversion": {
+            "default": 0.3,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Onboard Diversion",
+            "type": "number"
+          },
+          "tariff_wc": {
+            "default": 0,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Tariff Wc",
+            "type": "number"
+          },
+          "value_of_visit_rs": {
+            "default": 12,
+            "minimum": 0.0,
+            "title": "Value Of Visit Rs",
+            "type": "number"
+          }
+        },
+        "title": "WelfareRequest",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Station Sanitation Microservice Gateway",
+    "version": "6.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health"
+      }
+    },
+    "/v1/funding/fare-entitlement": {
+      "post": {
+        "operationId": "fare_entitlement_v1_funding_fare_entitlement_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fare Entitlement"
+      }
+    },
+    "/v1/infrastructure/size": {
+      "post": {
+        "operationId": "size_v1_infrastructure_size_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InfrastructureRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Size"
+      }
+    },
+    "/v1/operations/staff": {
+      "post": {
+        "operationId": "staff_v1_operations_staff_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Staff"
+      }
+    },
+    "/v1/optimization/policies": {
+      "post": {
+        "operationId": "policy_opt_v1_optimization_policies_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InfrastructureRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Policy Opt"
+      }
+    },
+    "/v1/queues/compare": {
+      "post": {
+        "operationId": "queues_compare_v1_queues_compare_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueueRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Queues Compare"
+      }
+    },
+    "/v1/queues/example": {
+      "get": {
+        "operationId": "queue_example_v1_queues_example_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Queue Example"
+      }
+    },
+    "/v1/welfare/compare": {
+      "post": {
+        "operationId": "welfare_compare_v1_welfare_compare_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InfrastructureRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Welfare Compare"
+      }
+    },
+    "/v1/welfare/evaluate": {
+      "post": {
+        "operationId": "welfare_v1_welfare_evaluate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WelfareRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Welfare"
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from math import ceil
+from math import ceil, isfinite
 @dataclass
 class Inputs:
     trains_day:int=20
@@ -41,6 +41,14 @@ class Inputs:
     infra_contingency:float=.12
 
 def calculate(x:Inputs):
+    for name,value in vars(x).items():
+        if not isinstance(value,(int,float)) or not isfinite(value) or value<0:
+            raise ValueError(f'{name} must be finite and nonnegative')
+    for name in ('station_use','urinal_share','sewage_fraction','glr_share','reuse_fraction'):
+        if getattr(x,name)>1:
+            raise ValueError(f'{name} must be in 0–1')
+    if not 0<x.pump_efficiency<=1 or not 0<x.stp_utilization<=1 or x.pumping_hours<=0:
+        raise ValueError('Pump efficiency, STP utilization and pumping hours must be positive')
     visits=x.trains_day*x.passengers_train*x.station_use
     water_kl=(visits*(x.urinal_share*x.urinal_l+(1-x.urinal_share)*x.wc_l+x.handwash_l))/1000+x.cleaning_kl
     design_water=water_kl*(1+x.demand_growth)

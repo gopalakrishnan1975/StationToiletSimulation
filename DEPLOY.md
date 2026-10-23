@@ -1,9 +1,11 @@
-# Streamlit Community Cloud deployment
+# Deployment
 
 Repository: gopalakrishnan1975/StationToiletSimulation (public).
-Branch: main. Main file: dashboard.py. Python: 3.12.
-Dependencies: requirements.txt. No secrets required for local computation.
+Streamlit app: https://station-toilet-simulation.streamlit.app/
+Branch: main; entry point: dashboard.py; Python: 3.12; dependencies: requirements.txt.
 
-Install locally: `pip install -r requirements-dev.txt`, then `python -m pytest -q` and `streamlit run dashboard.py`.
+No secrets are required for planning or CSV mode. For approved database data, deploy data_api.py separately and set DATA_API_BASE/DATA_API_TOKEN in Streamlit's secret settings. DATABASE_URL exists only on the data API and importer hosts. See docs/DATABASE_INTEGRATION.md.
 
-The interface uses modular Python domain services in a single Streamlit process for Community Cloud. The existing FastAPI gateway and Docker Compose are retained for a separate API/dashboard deployment; these are not independently hosted domain microservices. Streamlit Community Cloud alone does not host the FastAPI gateway.
+The deployed branch is followed automatically by Streamlit; a direct push may deploy before GitHub CI finishes. Local tests are run before release in this workflow. Future strict CI-gated promotion needs a separate release branch or other deployment control.
+
+Generated documentation CI requires GitHub Actions enabled and the repository workflow token permitted to write contents on main. If repository policy blocks that bot push, the workflow will report it; generated docs can still be rebuilt locally and committed normally.

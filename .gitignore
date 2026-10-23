@@ -2,3 +2,9 @@ __pycache__/
 .pytest_cache/
 .venv/
 .streamlit/secrets.toml
+*.db
+*.sqlite*
+.env
+.env.*
+!secrets.example.toml
+artifacts/

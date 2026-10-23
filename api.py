@@ -7,7 +7,7 @@ from services.roster import staffing
 from services.optimization import optimize
 from services.queues_v3 import run_36_fixture_layout
 
-app=FastAPI(title='Station Sanitation Microservice Gateway',version='4.0')
+app=FastAPI(title='Station Sanitation Microservice Gateway',version='6.0.0')
 class InfrastructureRequest(BaseModel):
     trains_day:int=Field(20,ge=1,le=500)
     passengers_train:int=Field(1000,ge=1,le=10000)
@@ -21,7 +21,7 @@ class WelfareRequest(BaseModel):
     infra:InfrastructureRequest=InfrastructureRequest()
 def as_infra(i):return Inputs(**i.model_dump())
 @app.get('/health')
-def health():return {'status':'ok','version':'5.0'}
+def health():return {'status':'ok','version':'6.0.0'}
 @app.post('/v1/infrastructure/size')
 def size(i:InfrastructureRequest):return calculate(as_infra(i))
 @app.post('/v1/welfare/evaluate')
@@ -45,3 +45,42 @@ class FundingRequest(BaseModel):
 @app.post('/v1/funding/fare-entitlement')
 def fare_entitlement(req:FundingRequest):
     return funding_evaluate(Funding(annual_boardings=req.annual_boardings,allocated_existing_fare_rs=req.allocated_existing_fare_rs,proposed_incremental_fare_rs=req.proposed_incremental_fare_rs,nonfare_revenue_lakh=req.nonfare_revenue_lakh,station_support_grant_lakh=req.station_support_grant_lakh),as_infra(req.infra))
+
+from services.experiments import compare_layouts
+from services.data import TrainCall,normalized_calls
+from fastapi import HTTPException
+from pydantic import ConfigDict,model_validator
+
+class QueueRequest(BaseModel):
+    model_config=ConfigDict(extra='forbid',allow_inf_nan=False)
+    passengers:int=Field(1000,ge=1,le=2500)
+    use:float=Field(.25,ge=0,le=1)
+    length:float=Field(600,ge=100,le=1500)
+    waiting:float=Field(30,ge=5,le=120)
+    headway:float=Field(30,ge=5,le=180)
+    trains:int=Field(3,ge=1,le=12)
+    repeats:int=Field(20,ge=2,le=100)
+    counts:tuple[int,int,int,int]=(9,6,18,3)
+    target:float=Field(3,gt=0,le=30)
+    service_floor:float=Field(.9,ge=0,le=1)
+    urinal_share:float=Field(.375,ge=0,le=.485)
+    calls:list[TrainCall]=Field(default_factory=list,max_length=100)
+
+    @model_validator(mode='after')
+    def budget(self):
+        if any(v<0 or v>120 for v in self.counts):
+            raise ValueError('Fixture counts must lie in 0–120')
+        load=sum(c.boarding_passengers for c in self.calls) if self.calls else self.trains*self.passengers
+        if load*self.repeats>4_000_000:
+            raise ValueError('Reduce simulation size')
+        return self
+
+@app.post('/v1/queues/compare')
+def queues_compare(req:QueueRequest):
+    values=req.model_dump(exclude={'calls'})
+    if req.calls:
+        values['calls']=normalized_calls(req.calls)
+    try:
+        return {'version':'6.0.0','results':compare_layouts(**values)}
+    except ValueError as e:
+        raise HTTPException(422,str(e)) from None

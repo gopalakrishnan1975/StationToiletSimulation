@@ -4,3 +4,5 @@ pydantic>=2,<3
 streamlit>=1.50,<2
 pandas>=2,<3
 requests>=2.31
+SQLAlchemy>=2,<3
+psycopg[binary]>=3.2,<4

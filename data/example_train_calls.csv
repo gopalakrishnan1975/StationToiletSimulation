@@ -1,0 +1,4 @@
+station_code,platform,train_id,departure_at,boarding_passengers,attempts_urinal,attempts_male_wc,attempts_female_wc,attempts_accessible_wc
+DEMO,1,DEMO001,2026-10-23T08:00:00+05:30,1000,90,30,120,10
+DEMO,1,DEMO002,2026-10-23T08:20:00+05:30,800,70,25,95,10
+DEMO,1,DEMO003,2026-10-23T09:00:00+05:30,600,55,20,70,5
